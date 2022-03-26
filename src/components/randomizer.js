@@ -64,9 +64,6 @@ export default class PersonList extends React.Component {
 
                 </div>
             </div>
-
-
-
         )
     }
 }
