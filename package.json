@@ -16,6 +16,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "test:prepare": "playwright install",
     "test": "react-scripts test",
     "test:e2e": "playwright test",
     "eject": "react-scripts eject"
