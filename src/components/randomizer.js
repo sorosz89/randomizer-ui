@@ -46,18 +46,18 @@ export default class PersonList extends React.Component {
                 <div>
                     {this.state.name}
                     <br />
-                    <button
+                    <button class="button button1"
                         onClick={() => {
                             this.componentDidMount();
                         }}
                     >Reorder</button>
                     <div>
-                        <button
+                        <button data-test-id="copy-list-button" class="button button1"
                             onClick={() => navigator.clipboard.writeText(`Timestamp: ${this.getTimeStamp()}\nRandom:  ${this.state.persons.join(", ")}`)}
                         >Copy list to clipboard</button>
                     </div>
                     <div>
-                        <button
+                        <button class="button button1"
                             onClick={() => navigator.clipboard.writeText(this.formatNotes(this.state.persons))}
                         >Copy notes to clipboard</button>
                     </div>
