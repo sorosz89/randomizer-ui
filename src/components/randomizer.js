@@ -20,7 +20,7 @@ export default class PersonList extends React.Component {
     }
 
     formatNotes(persons) {
-        const template = (person) => `${person}\nYesterday:\nToday:\n`;
+        const template = (person) => `${person}\nYesterday:\nToday:\n\n`;
 
         return persons.map(person => {
             return template(person)
