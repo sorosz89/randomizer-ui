@@ -1,4 +1,6 @@
 import React from 'react';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Button from '@mui/material/Button';
 import axios from 'axios';
 
 export default class PersonList extends React.Component {
@@ -20,7 +22,7 @@ export default class PersonList extends React.Component {
     formatNotes(persons) {
         const template = (person) => `${person}\nYesterday:\nToday:\n\n`;
 
-        return  persons.map(person => {
+        return persons.map(person => {
             return template(person)
         }).toString().replace(/,/g, "");
     }
@@ -32,37 +34,30 @@ export default class PersonList extends React.Component {
     render() {
         return (
             <div>
-                <div>
-                    <p>
-                        Timestamp: {this.getTimeStamp()}
-                    </p>
-                </div>
-
-                <ol>
+                <div class = "lista">
                     {
                         this.state.persons.map(person => <li >{person}</li>)
                     }
-                </ol>
+                </div>
+
                 <div>
                     {this.state.name}
                     <br />
-                    <button class="button button1"
-                        onClick={() => {
-                            this.componentDidMount();
-                        }}
-                    >Reorder</button>
-                    <div>
-                        <button data-test-id="copy-list-button" class="button button1"
+                    <ButtonGroup variant="text" aria-label="outlined button group">
+                        <Button onClick={() => { this.componentDidMount(); }} >Reorder</Button>
+                        <Button data-test-id="copy-list-button"
                             onClick={() => navigator.clipboard.writeText(`Timestamp: ${this.getTimeStamp()}\nRandom:  ${this.state.persons.join(", ")}`)}
-                        >Copy list to clipboard</button>
-                    </div>
-                    <div>
-                        <button class="button button1"
+                        >Copy list</Button>
+                        <Button
                             onClick={() => navigator.clipboard.writeText(this.formatNotes(this.state.persons))}
-                        >Copy notes to clipboard</button>
-                    </div>
+                        >Copy notes</Button>
+                    </ButtonGroup>
 
                 </div>
+                <p class="timestamp">
+                    {this.getTimeStamp()}
+                </p>
+
             </div>
         )
     }

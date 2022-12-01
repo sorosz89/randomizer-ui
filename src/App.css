@@ -3,7 +3,7 @@
 }
 
 .App-logo {
-  height: 20vmin;
+  height: 15vmin;
   pointer-events: none;
 }
 
@@ -11,6 +11,19 @@
   .App-logo {
     animation: App-logo-spin infinite 50s reverse;
   }
+}
+
+li {
+  list-style-type: none;
+}
+
+.lista {
+  margin-top: 30px;
+}
+
+.timestamp {
+  font-family: monospace;
+  font-size: small;
 }
 
 .App-header {
@@ -23,18 +36,6 @@
   font-size: calc(10px + 2vmin);
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   color: white;
-}
-
-.button { 
-  width: 250px;
-  background-color: rgb(39, 34, 34);
-  color: rgb(255, 255, 255);
-  border: 1px solid rgb(39, 34, 34);
-}
-
-
-.button1:hover {
-  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
 .App-link {
