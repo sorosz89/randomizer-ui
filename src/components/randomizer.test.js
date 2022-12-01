@@ -6,12 +6,6 @@ beforeEach(() => {
     p = new PersonList();
 });
 
-test('renders learn react link', () => {
-    render(<PersonList />);
-    const linkElement = screen.getByText(/Timestamp/i);
-    expect(linkElement).toBeInTheDocument();
-});
-
 test('state should be empty', () => {
     expect(p.state).toBeDefined();
 });
