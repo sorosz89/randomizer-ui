@@ -11,5 +11,5 @@ test('state should be empty', () => {
 });
 
 test('formatting should be ok', () => {
-    expect(p.formatNotes(["A", "B"])).toEqual(`A\nYesterday:\nToday:\n\nB\nYesterday:\nToday:\n\n`);
+    expect(p.formatNotes(["A", "B"])).toEqual(`A\nYesterday:\nToday:\n\nB\nYesterday:\nToday:\n`);
 });

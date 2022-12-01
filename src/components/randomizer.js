@@ -20,7 +20,7 @@ export default class PersonList extends React.Component {
     }
 
     formatNotes(persons) {
-        const template = (person) => `${person}\nYesterday:\nToday:\n\n`;
+        const template = (person) => `${person}\nYesterday:\nToday:\n`;
 
         return persons.map(person => {
             return template(person)
@@ -43,7 +43,7 @@ export default class PersonList extends React.Component {
                 <div>
                     {this.state.name}
                     <br />
-                    <ButtonGroup variant="text" aria-label="outlined button group">
+                    <ButtonGroup variant="text" size="medium" color="primary" aria-label="outlined button group">
                         <Button onClick={() => { this.componentDidMount(); }} >Reorder</Button>
                         <Button data-test-id="copy-list-button"
                             onClick={() => navigator.clipboard.writeText(`Timestamp: ${this.getTimeStamp()}\nRandom:  ${this.state.persons.join(", ")}`)}

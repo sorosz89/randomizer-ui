@@ -3,13 +3,13 @@
 }
 
 .App-logo {
-  height: 15vmin;
+  height: 20vmin;
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 50s reverse;
+    animation: App-logo-spin infinite 10s reverse;
   }
 }
 
@@ -33,7 +33,7 @@ li {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(30px + 2vmin);
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   color: white;
 }
