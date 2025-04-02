@@ -1,21 +1,16 @@
-import logo from './logo.svg';
 import './App.css';
 import PersonList from './components/randomizer';
+import { Container } from '@mui/material';
 
 function App() {
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <div className="App">
-        <div className="App">
-      <PersonList/>
-    </div>
-       
-    </div>
-      </header>
-    </div>
+    <Container maxWidth="md" style={{ backgroundColor: '#121212', color: '#00FF7F', minHeight: '100vh', padding: '20px' }}>
+      <div id="root" style={{ backgroundColor: '#121212', minHeight: '100vh' }}>
+        <header className="App-header">
+          <PersonList />
+        </header>
+      </div>
+    </Container>
   );
 }
 

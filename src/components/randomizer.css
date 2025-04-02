@@ -1,0 +1,67 @@
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.flip-card,
+.flip-card-inner,
+.flip-card-front,
+.flip-card-back {
+  display: none; /* Remove flip card styles */
+}
+
+.flip-card.flipping .flip-card-inner {
+  transform: none;
+}
+
+li {
+  list-style-type: none;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #121212;
+  border-radius: 8px;
+  color: #00FF7F;
+}
+
+.list-card {
+  margin: 15px auto;
+  padding: 10px;
+  max-width: 100%; /* Ensure cards fit within the screen */
+  background-color: #121212;
+  border-radius: 12px;
+  transition: transform 0.6s ease-in-out, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  box-sizing: border-box; /* Include padding and border in width/height calculations */
+}
+
+.list-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 255, 127, 0.2);
+}
+
+.menu-button {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex: 1 1 auto; /* Allow buttons to resize on smaller screens */
+  max-width: 200px; /* Prevent buttons from becoming too wide */
+}
+
+.menu-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 255, 127, 0.3);
+}
+
+@media (max-width: 600px) {
+  .list-card {
+    height: auto; /* Allow cards to adjust height on smaller screens */
+    padding: 8px;
+  }
+
+  .menu-button {
+    padding: 8px 16px; /* Adjust button padding for smaller screens */
+  }
+}

@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders Reorder button', () => {
   render(<App />);
-  const linkElement = screen.getByText(/Reorder/i);
-  expect(linkElement).toBeInTheDocument();
+  const reorderButton = screen.getByText(/Reorder/i);
+  expect(reorderButton).toBeInTheDocument();
 });
