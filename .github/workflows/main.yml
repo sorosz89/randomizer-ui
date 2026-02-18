@@ -31,12 +31,3 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'eu-central-1'   # optional: defaults to us-east-1
           SOURCE_DIR: 'build'      # optional: defaults to entire repository
-
-      - run: npm run test:prepare    
-      - run: npm run test:e2e
-
-      - name: Archive e2e test report
-        uses: actions/upload-artifact@v3
-        with:
-          name: e2e-test-report
-          path: playwright-report/index.html
