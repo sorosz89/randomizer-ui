@@ -1,67 +1,126 @@
-.card-container {
+.randomizer {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.randomizer-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.randomizer-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-lilac);
+  border-top-color: var(--color-mint);
+  border-right-color: var(--color-lilac);
+  border-radius: 50%;
+  animation: randomizer-spin 0.8s linear infinite;
+}
+
+@keyframes randomizer-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.randomizer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.randomizer-item {
+  background: linear-gradient(90deg, rgba(0, 255, 255, 0.22) 0%, rgba(157, 0, 255, 0.2) 100%);
+  color: var(--color-mint);
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border-radius: 6px;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 12px rgba(0, 255, 172, 0.4), 0 1px 2px rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--color-lilac);
+  box-shadow: 0 0 0 1px rgba(0, 255, 255, 0.3), 0 0 12px rgba(157, 0, 255, 0.25), 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.randomizer-item:hover {
+  box-shadow: 0 0 0 2px var(--color-lilac), 0 0 20px rgba(157, 0, 255, 0.4), 0 6px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.randomizer-empty {
+  color: var(--color-mint);
+  text-align: center;
+  margin: 24px 0;
+  opacity: 1;
+}
+
+.randomizer-timestamp {
+  color: var(--color-mint);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 16px 0 24px;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(0, 255, 172, 0.3);
+}
+
+.randomizer-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
   justify-content: center;
+  gap: 12px;
+  width: 100%;
 }
 
-.flip-card,
-.flip-card-inner,
-.flip-card-front,
-.flip-card-back {
-  display: none; /* Remove flip card styles */
+.randomizer-btn {
+  background: var(--color-mint);
+  color: var(--color-night);
+  border: 2px solid var(--color-lilac);
+  padding: 12px 24px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, filter 0.2s ease;
 }
 
-.flip-card.flipping .flip-card-inner {
-  transform: none;
+.randomizer-btn:hover {
+  background: var(--color-mint);
+  color: var(--color-night);
+  opacity: 1;
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(157, 0, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-color: var(--color-lilac);
 }
 
-li {
-  list-style-type: none;
-  padding: 10px;
-  margin: 10px 0;
-  background-color: #121212;
-  border-radius: 8px;
-  color: #00FF7F;
+.randomizer-btn:active {
+  transform: translateY(0);
 }
 
-.list-card {
-  margin: 15px auto;
-  padding: 10px;
-  max-width: 100%; /* Ensure cards fit within the screen */
-  background-color: #121212;
-  border-radius: 12px;
-  transition: transform 0.6s ease-in-out, box-shadow 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 80px;
-  box-sizing: border-box; /* Include padding and border in width/height calculations */
-}
-
-.list-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 255, 127, 0.2);
-}
-
-.menu-button {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  flex: 1 1 auto; /* Allow buttons to resize on smaller screens */
-  max-width: 200px; /* Prevent buttons from becoming too wide */
-}
-
-.menu-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 255, 127, 0.3);
-}
-
-@media (max-width: 600px) {
-  .list-card {
-    height: auto; /* Allow cards to adjust height on smaller screens */
-    padding: 8px;
+@media (max-width: 520px) {
+  .randomizer {
+    padding: 16px;
   }
 
-  .menu-button {
-    padding: 8px 16px; /* Adjust button padding for smaller screens */
+  .randomizer-actions {
+    flex-direction: column;
+  }
+
+  .randomizer-btn {
+    width: 100%;
   }
 }

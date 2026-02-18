@@ -2,17 +2,23 @@
 const { test, expect } = require('@playwright/test');
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://randomizer-ui.s3-website.eu-central-1.amazonaws.com/');
+  await page.goto('/');
 });
 
 test.describe('Randomizer UI', () => {
-  test('should open landing page', async ({ page }) => {
-    const logo = page.locator('.App-logo');
-    await expect(logo).toBeVisible();
+  test('should show main randomizer container', async ({ page }) => {
+    await expect(page.locator('.randomizer')).toBeVisible();
   });
 
-  test('should display the Reorder button', async ({ page }) => {
-    const reorderButton = page.locator('text=Reorder');
-    await expect(reorderButton).toBeVisible();
+  test('should display REORDER button', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /reorder/i })).toBeVisible();
+  });
+
+  test('should display COPY LIST button', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /copy list/i })).toBeVisible();
+  });
+
+  test('should display COPY NOTES button', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /copy notes/i })).toBeVisible();
   });
 });

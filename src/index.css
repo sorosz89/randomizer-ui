@@ -1,3 +1,12 @@
+:root {
+  /* Brand palette – Sea, Mint, Lilac, Sky, Night */
+  --color-night: #000000;
+  --color-sea: #00ffff;
+  --color-mint: #00ffac;
+  --color-lilac: #9d00ff;
+  --color-sky: #7799ff;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
