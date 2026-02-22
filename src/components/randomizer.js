@@ -43,7 +43,7 @@ export default class PersonList extends React.Component {
   };
 
   copyList = () => {
-    const { persons, timestamp } = this.state;
+    const { persons } = this.state;
     const ts = this.getTimestampFormatted();
     const list = persons.join(', ');
     const text = ts ? `Timestamp: ${ts}\n${list}` : list;
