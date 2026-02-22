@@ -102,11 +102,15 @@ export default class PersonList extends React.Component {
     return (
       <div className="randomizer">
         {loading ? (
-          <div className="randomizer-loading">
-            <div className="randomizer-spinner" />
-          </div>
+          <ul className="randomizer-list randomizer-skeleton-list" aria-busy="true">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <li key={i} className="randomizer-item randomizer-skeleton-item">
+                <span className="randomizer-skeleton-line" />
+              </li>
+            ))}
+          </ul>
         ) : persons.length > 0 ? (
-          <ul className="randomizer-list">
+          <ul className="randomizer-list randomizer-list--loaded">
             {persons.map((name, index) => (
               <li key={`${name}-${index}`} className="randomizer-item">
                 {name}
