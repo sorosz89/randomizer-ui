@@ -87,7 +87,7 @@ export default class PersonList extends React.Component {
     const html = this.formatNotesHtml(persons);
     const blobHtml = new Blob([html], { type: 'text/html' });
     const blobPlain = new Blob([text], { type: 'text/plain' });
-    const item = new ClipboardItem({
+    const item = new window.ClipboardItem({
       'text/html': blobHtml,
       'text/plain': blobPlain,
     });
