@@ -47,7 +47,13 @@ body {
   place-items: center;
   padding: 24px 16px;
   overflow-x: hidden;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
 }
+/* Buttons always show the link hand, including over their label text */
+.btn, .btn * { cursor: pointer; }
+.btn:disabled, .btn:disabled * { cursor: default; }
 
 /* Living backdrop the glass refracts */
 .backdrop {
@@ -213,7 +219,7 @@ body {
 }
 .toast.show { transform: translate(-50%, 0); opacity: 1; }
 
-.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn:disabled { opacity: 0.45; }
 
 .placeholder {
   margin: 0;
@@ -228,6 +234,8 @@ body {
 .reveal .item { animation: deal 0.75s cubic-bezier(.3,1.35,.5,1) calc(var(--i) * 0.08s) both; }
 .btn:disabled:hover { background: var(--glass); }
 .btn:disabled:active { transform: none; }
+.btn-primary:disabled:hover { background: var(--accent); filter: none; }
+.busy .btn:disabled { opacity: 0.4; transition: opacity 0.2s; }
 
 /* Opening sequence: the light comes up, the glass condenses, the names are dealt in */
 .intro .backdrop { animation: lightsUp 1.6s ease-out both; }
@@ -366,23 +374,49 @@ body {
     toast(done);
   }
 
-  document.getElementById("reorder").addEventListener("click", () => {
+  const btnMagic = document.getElementById("reorder");
+  const btnList = document.getElementById("copyList");
+  const btnNotes = document.getElementById("copyNotes");
+  let busy = false;
+
+  function setBusy(on) {
+    busy = on;
+    document.body.classList.toggle("busy", on);
+    listEl.setAttribute("aria-busy", on ? "true" : "false");
+    btnMagic.disabled = on;
+    const canCopy = !on && order.length > 0;
+    btnList.disabled = !canCopy;
+    btnNotes.disabled = !canCopy;
+  }
+
+  // Resolves once every animation on the list (CSS or scripted) has finished
+  function animationsDone() {
+    return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => {
+      const anims = listEl.getAnimations({ subtree: true });
+      Promise.all(anims.map(a => a.finished.catch(() => {}))).then(resolve);
+    })));
+  }
+
+  btnMagic.addEventListener("click", async () => {
+    if (busy) return;
+    setBusy(true);
     document.body.classList.remove("intro");
     order = shuffle(names);
     stamp = new Date().toLocaleString("en-US");
     stampEl.textContent = "Timestamp: " + stamp;
-    document.getElementById("copyList").disabled = false;
-    document.getElementById("copyNotes").disabled = false;
     const placeholder = document.getElementById("placeholder");
     if (!placeholder.hidden) {
       // First draw: deal the names in
       placeholder.hidden = true;
       listEl.classList.add("reveal");
       render(false);
-      setTimeout(() => listEl.classList.remove("reveal"), 1400);
+      await animationsDone();
+      listEl.classList.remove("reveal");
     } else {
       render(true);
+      await animationsDone();
     }
+    setBusy(false);
   });
   document.getElementById("copyList").addEventListener("click", () => {
     copy(order.join(", ") + " (Timestamp: " + stamp + ")", "List copied");
