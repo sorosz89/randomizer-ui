@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Randomizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #050912;
+  --blob-1: #0b4fd9;
+  --blob-2: #00a3b8;
+  --blob-3: #4b2bbd;
+  --blob-4: #0f8f5a;
+  --ink: #e8f1ff;
+  --ink-soft: rgba(200, 220, 245, 0.62);
+  --glass: rgba(14, 24, 44, 0.45);
+  --glass-strong: rgba(22, 36, 64, 0.62);
+  --edge: rgba(140, 200, 255, 0.22);
+  --edge-low: rgba(0, 0, 0, 0.4);
+  --shade: rgba(0, 0, 0, 0.55);
+  --spec: rgba(170, 225, 255, 0.3);
+  --accent: #4fe3ff;
+  --accent-ink: #021420;
+  --focus: #4fe3ff;
+  --trace: rgba(80, 170, 255, 0.17);
+  --pad: rgba(110, 190, 255, 0.28);
+  --pulse: #6ff0ff;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+*, *::before, *::after { box-sizing: inherit; }
+html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  overflow-x: hidden;
+}
+
+/* Living backdrop the glass refracts */
+.backdrop {
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  filter: blur(70px) saturate(140%);
+  pointer-events: none;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.42;
+  animation: drift 26s ease-in-out infinite alternate;
+}
+.b1 { width: 46vmax; height: 46vmax; background: var(--blob-1); left: 8%;  top: 6%; }
+.b2 { width: 40vmax; height: 40vmax; background: var(--blob-2); right: 4%; top: 22%; animation-duration: 31s; animation-delay: -8s; }
+.b3 { width: 42vmax; height: 42vmax; background: var(--blob-3); left: 22%; bottom: 2%; animation-duration: 35s; animation-delay: -14s; }
+.b4 { width: 24vmax; height: 24vmax; background: var(--blob-4); right: 24%; bottom: 18%; animation-duration: 22s; animation-delay: -4s; }
+@keyframes drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(6vmax, -4vmax) scale(1.12); }
+  100% { transform: translate(-5vmax, 5vmax) scale(0.92); }
+}
+
+/* Circuit-board layer */
+.circuit {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Glass material */
+.glass {
+  position: relative;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(28px) saturate(185%);
+  backdrop-filter: blur(28px) saturate(185%);
+  border: 1px solid var(--edge);
+  box-shadow:
+    inset 0 1px 0 var(--spec),
+    inset 0 -1px 0 var(--edge-low),
+    0 18px 50px -12px var(--shade);
+  isolation: isolate;
+}
+/* Specular highlight that follows the pointer */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(240px circle at var(--mx, 30%) var(--my, 0%), var(--spec), transparent 60%);
+  opacity: 0.55;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.3s;
+}
+
+.panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 420px);
+  border-radius: 36px;
+  padding: 28px 20px 20px;
+}
+
+.title {
+  margin: 0 8px 4px;
+  font-size: clamp(2.2rem, 8vw, 2.9rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+.stamp {
+  margin: 0 8px 22px;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px 12px 12px;
+  border-radius: 22px;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  will-change: transform;
+}
+.pos {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--glass-strong);
+  border: 1px solid var(--edge);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+.item:first-child .pos {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 20px;
+}
+.btn {
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(.3,1.6,.5,1), background 0.2s;
+}
+.btn:hover { background: var(--glass-strong); }
+.btn:active { transform: scale(0.96); }
+.btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.btn-primary {
+  grid-column: 1 / -1;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+  font-size: 1.12rem;
+  padding: 17px;
+}
+.btn-primary:hover { background: var(--accent); filter: brightness(1.08); }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  transform: translate(-50%, 140%);
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-weight: 600;
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(.3,1.4,.5,1), opacity 0.3s;
+}
+.toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.placeholder {
+  margin: 0;
+  padding: 44px 24px;
+  border-radius: 26px;
+  text-align: center;
+  font-size: 1.15rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.placeholder[hidden] { display: none; }
+.reveal .item { animation: deal 0.75s cubic-bezier(.3,1.35,.5,1) calc(var(--i) * 0.08s) both; }
+.btn:disabled:hover { background: var(--glass); }
+.btn:disabled:active { transform: none; }
+
+/* Opening sequence: the light comes up, the glass condenses, the names are dealt in */
+.intro .backdrop { animation: lightsUp 1.6s ease-out both; }
+.intro .circuit { animation: bootUp 1.8s ease-out both; }
+@keyframes bootUp {
+  0% { opacity: 0; }
+  30% { opacity: 0.5; }
+  38% { opacity: 0.15; }
+  100% { opacity: 1; }
+}
+.intro .panel { animation: condense 0.9s cubic-bezier(.2,.9,.3,1) 0.15s both; }
+.intro .title { animation: rise 0.7s cubic-bezier(.2,.9,.3,1) 0.45s both; }
+.intro .stamp { animation: rise 0.7s cubic-bezier(.2,.9,.3,1) 0.55s both; }
+.intro .placeholder { animation: rise 0.7s cubic-bezier(.2,.9,.3,1) 0.65s both; }
+.intro .actions .btn { animation: rise 0.6s cubic-bezier(.2,.9,.3,1) calc(1.2s + var(--b) * 0.07s) both; }
+.intro .btn-primary { animation-name: rise, glint; animation-duration: 0.6s, 1.1s; animation-delay: 1.2s, 1.8s; animation-timing-function: cubic-bezier(.2,.9,.3,1), ease-in-out; }
+
+@keyframes lightsUp {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes condense {
+  from { opacity: 0; transform: translateY(28px) scale(0.94); filter: blur(14px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); filter: blur(6px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes deal {
+  from { opacity: 0; transform: translateY(26px) rotate(-2.5deg) scale(0.92); filter: blur(8px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes glint {
+  0%, 100% { box-shadow: inset 0 1px 0 var(--spec), 0 18px 50px -12px var(--shade); }
+  50%      { box-shadow: inset 0 1px 0 var(--spec), 0 0 0 6px color-mix(in srgb, var(--accent) 25%, transparent), 0 18px 50px -12px var(--shade); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob { animation: none; }
+  .btn, .toast { transition: none; }
+  .intro .backdrop, .intro .circuit, .intro .panel, .intro .title, .intro .stamp,
+  .intro .placeholder, .reveal .item, .intro .actions .btn { animation: none; }
+}
+</style>
+</head>
+<body class="intro">
+  <div class="backdrop" aria-hidden="true">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="blob b3"></div><div class="blob b4"></div>
+  </div>
+  <canvas class="circuit" id="circuit" aria-hidden="true"></canvas>
+
+  <main class="panel glass">
+    <h1 class="title">Randomizer</h1>
+    <p class="stamp" id="stamp"></p>
+    <p class="placeholder glass" id="placeholder">Six names are waiting.<br>Press the button to draw their order.</p>
+    <ol class="list" id="list" aria-live="polite"></ol>
+    <div class="actions">
+      <button type="button" class="btn glass btn-primary" id="reorder" style="--b:0">Do the magic</button>
+      <button type="button" class="btn glass" id="copyList" style="--b:1" disabled>Copy list</button>
+      <button type="button" class="btn glass" id="copyNotes" style="--b:2" disabled>Copy notes</button>
+    </div>
+  </main>
+
+  <div class="toast glass" id="toast" role="status"></div>
+
+<script>
+(function () {
+  const names = ["Geri", "Csabi", "Laci", "Galur", "Sanyi", "Levi"];
+  const listEl = document.getElementById("list");
+  const stampEl = document.getElementById("stamp");
+  const toastEl = document.getElementById("toast");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let order = [];
+  let stamp = "";
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const r = new Uint32Array(1); crypto.getRandomValues(r);
+      const j = r[0] % (i + 1);
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function render(animate) {
+    // FLIP: remember where each name was
+    const before = {};
+    listEl.querySelectorAll(".item").forEach(li => {
+      before[li.dataset.name] = li.getBoundingClientRect().top;
+    });
+
+    listEl.innerHTML = "";
+    order.forEach((name, i) => {
+      const li = document.createElement("li");
+      li.className = "item glass";
+      li.dataset.name = name;
+      li.style.setProperty("--i", i);
+      li.innerHTML = '<span class="pos">' + (i + 1) + '</span><span></span>';
+      li.lastChild.textContent = name;
+      listEl.appendChild(li);
+    });
+
+    if (!animate || reduce) return;
+    listEl.querySelectorAll(".item").forEach((li, i) => {
+      const prev = before[li.dataset.name];
+      if (prev === undefined) return;
+      const dy = prev - li.getBoundingClientRect().top;
+      li.animate(
+        [{ transform: `translateY(${dy}px) scale(0.98)` }, { transform: "translateY(0) scale(1)" }],
+        { duration: 520, delay: i * 25, easing: "cubic-bezier(.3,1.25,.5,1)", fill: "backwards" }
+      );
+    });
+  }
+
+  let toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+  }
+
+  async function copy(text, done) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch (_) { toast("Copy blocked by the browser"); ta.remove(); return; }
+      ta.remove();
+    }
+    toast(done);
+  }
+
+  document.getElementById("reorder").addEventListener("click", () => {
+    document.body.classList.remove("intro");
+    order = shuffle(names);
+    stamp = new Date().toLocaleString("en-US");
+    stampEl.textContent = "Timestamp: " + stamp;
+    document.getElementById("copyList").disabled = false;
+    document.getElementById("copyNotes").disabled = false;
+    const placeholder = document.getElementById("placeholder");
+    if (!placeholder.hidden) {
+      // First draw: deal the names in
+      placeholder.hidden = true;
+      listEl.classList.add("reveal");
+      render(false);
+      setTimeout(() => listEl.classList.remove("reveal"), 1400);
+    } else {
+      render(true);
+    }
+  });
+  document.getElementById("copyList").addEventListener("click", () => {
+    copy(order.join(", ") + " (Timestamp: " + stamp + ")", "List copied");
+  });
+  document.getElementById("copyNotes").addEventListener("click", () => {
+    const notes = "Timestamp: " + stamp + "\n" + order.map((n, i) => (i + 1) + ". " + n).join("\n");
+    copy(notes, "Notes copied");
+  });
+
+  // Adaptive specular light: each glass surface catches the pointer
+  document.addEventListener("pointermove", e => {
+    document.querySelectorAll(".glass").forEach(el => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      el.style.setProperty("--my", (e.clientY - r.top) + "px");
+    });
+  }, { passive: true });
+
+  // Circuit-board backdrop with signals travelling along the traces
+  (function circuit() {
+    const cv = document.getElementById("circuit");
+    const ctx = cv.getContext("2d");
+    const css = getComputedStyle(document.documentElement);
+    const traceC = css.getPropertyValue("--trace").trim();
+    const padC = css.getPropertyValue("--pad").trim();
+    const pulseC = css.getPropertyValue("--pulse").trim();
+    const G = 28;
+    const dirs = [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
+    let W, H, dpr, base, paths = [], pulses = [], last = 0;
+
+    function build() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = innerWidth; H = innerHeight;
+      cv.width = W * dpr; cv.height = H * dpr;
+      paths = [];
+      const count = Math.round((W * H) / 6500);
+      for (let n = 0; n < count; n++) {
+        let x = Math.floor(Math.random() * (W / G)) * G;
+        let y = Math.floor(Math.random() * (H / G)) * G;
+        let d = Math.floor(Math.random() * 4) * 2;
+        const pts = [[x, y]];
+        const segs = 2 + Math.floor(Math.random() * 4);
+        for (let s = 0; s < segs; s++) {
+          const steps = 1 + Math.floor(Math.random() * 5);
+          x += dirs[d][0] * steps * G; y += dirs[d][1] * steps * G;
+          pts.push([x, y]);
+          d = (d + (Math.random() < 0.5 ? 1 : 7)) % 8; // 45° bends
+        }
+        const lens = [0];
+        for (let i = 1; i < pts.length; i++) {
+          lens.push(lens[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+        }
+        paths.push({ pts, lens, total: lens[lens.length - 1] });
+      }
+
+      base = document.createElement("canvas");
+      base.width = cv.width; base.height = cv.height;
+      const b = base.getContext("2d");
+      b.scale(dpr, dpr);
+      b.fillStyle = traceC;
+      for (let gx = 0; gx < W; gx += G * 2) for (let gy = 0; gy < H; gy += G * 2) b.fillRect(gx, gy, 1, 1);
+      b.lineWidth = 1.2; b.lineJoin = "round"; b.strokeStyle = traceC;
+      paths.forEach(p => {
+        b.beginPath();
+        p.pts.forEach(([px, py], i) => i ? b.lineTo(px, py) : b.moveTo(px, py));
+        b.stroke();
+        const [sx, sy] = p.pts[0], [ex, ey] = p.pts[p.pts.length - 1];
+        b.fillStyle = padC; b.beginPath(); b.arc(sx, sy, 2, 0, 7); b.fill();
+        b.strokeStyle = padC; b.beginPath(); b.arc(ex, ey, 3.2, 0, 7); b.stroke();
+        b.strokeStyle = traceC; b.fillStyle = traceC;
+      });
+
+      pulses = [];
+      const pc = Math.max(6, Math.round(paths.length / 7));
+      for (let i = 0; i < pc; i++) pulses.push(spawn(true));
+      draw(0);
+    }
+
+    function spawn(scatter) {
+      const p = Math.floor(Math.random() * paths.length);
+      return { p, t: scatter ? Math.random() * paths[p].total : 0, v: 50 + Math.random() * 110 };
+    }
+
+    function at(path, t) {
+      const { pts, lens } = path;
+      let i = 1;
+      while (i < lens.length - 1 && lens[i] < t) i++;
+      const seg = lens[i] - lens[i - 1] || 1;
+      const k = Math.min(1, Math.max(0, (t - lens[i - 1]) / seg));
+      return [pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * k, pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * k];
+    }
+
+    function draw(dt) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      ctx.drawImage(base, 0, 0);
+      if (reduce) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.fillStyle = pulseC;
+      ctx.shadowColor = pulseC;
+      pulses.forEach((s, idx) => {
+        const path = paths[s.p];
+        s.t += s.v * dt;
+        if (s.t > path.total + 40) { pulses[idx] = spawn(false); return; }
+        for (let k = 0; k < 7; k++) {
+          const tt = s.t - k * 5;
+          if (tt < 0 || tt > path.total) continue;
+          const [x, y] = at(path, tt);
+          ctx.globalAlpha = (1 - k / 7) * 0.85;
+          ctx.shadowBlur = k === 0 ? 10 : 0;
+          ctx.beginPath(); ctx.arc(x, y, k === 0 ? 1.9 : 1.3, 0, 7); ctx.fill();
+        }
+      });
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+    }
+
+    function loop(ts) {
+      const dt = last ? Math.min(0.05, (ts - last) / 1000) : 0;
+      last = ts;
+      draw(dt);
+      requestAnimationFrame(loop);
+    }
+
+    let rt;
+    addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(build, 200); });
+    build();
+    if (!reduce) requestAnimationFrame(loop);
+  })();
+
+  // Start empty: names appear only when the user asks for a draw
+  stampEl.textContent = "No order drawn yet";
+  setTimeout(() => document.body.classList.remove("intro"), reduce ? 0 : 3000);
+})();
+</script>
+</body>
+</html>
